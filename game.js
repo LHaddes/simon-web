@@ -4,6 +4,7 @@ var userClickedPattern = [];
 var level = 0;
 var counter = 0;
 var timer = 750;
+var maxScore = 0;
 
 $(document).one("keypress", function() {
   $("h1").text("Level " + level);
@@ -77,20 +78,23 @@ function animatePress(currentColor) {
 function checkAnswer(currentLevel) {
   if(userClickedPattern[currentLevel] === gamePattern[currentLevel])
   {
-    console.log("Win");
     if(userClickedPattern.length === gamePattern.length)
     {
       setTimeout(nextSequence, 750);
     }
   }
   else{
-    console.log("Loose");
+    if(maxScore < level)
+    {
+      maxScore = level;
+    }
+
     $("body").addClass("game-over");
     setTimeout(function() {
       $("body").removeClass("game-over");
     }, 200);
 
-    $("h1").text("Game Over, Press any key to Restart");
+    $("h1").text("Game Over ! Your max score is " + maxScore + ". Press any key to Restart");
     $(document).on("keypress", startOver);
   }
 }
