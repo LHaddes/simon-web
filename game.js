@@ -2,6 +2,8 @@ var buttonColors = ["red", "blue", "green", "yellow"];
 var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
+var counter = 0;
+var timer = 750;
 
 $(document).one("keypress", function() {
   $("h1").text("Level " + level);
@@ -19,6 +21,7 @@ $(".btn").on("click", function() {
   checkAnswer(userClickedPattern.length - 1);
 })
 
+
 function nextSequence() {
   userClickedPattern = [];
   level++;
@@ -30,10 +33,33 @@ function nextSequence() {
   var randomChosenColor = buttonColors[randomNumber];
   gamePattern.push(randomChosenColor);
 
-  $("#" + randomChosenColor).fadeIn(100).fadeOut(100).fadeIn(100);
+  if(level % 3 === 0 && timer > 150){
+    timer -= 50;
+  }
 
-  playSound(randomChosenColor);
+
+  playSequence();
+
 }
+
+function playSequence(){
+  counter = 0;
+
+  const myInterval = setInterval(function() {
+    //console.log(interval);
+
+    var tempColor = gamePattern[counter];
+    $("#" + tempColor).fadeIn(100).fadeOut(100).fadeIn(100);
+    playSound(tempColor);
+    counter++;
+
+    if(counter >= gamePattern.length)
+    {
+      clearInterval(myInterval);
+    }
+  }, timer);
+}
+
 
 function playSound(name) {
   var soundPath = "./sounds/" + name + ".mp3";
@@ -72,6 +98,8 @@ function checkAnswer(currentLevel) {
 function startOver() {
   level = 0;
   gamePattern = [];
+  counter = 0;
+  timer = 750;
 
   nextSequence();
 }
